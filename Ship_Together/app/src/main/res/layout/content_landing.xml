@@ -13,8 +13,42 @@
     tools:showIn="@layout/activity_landing"
     tools:context="nl.hr.shiptogether.LandingActivity">
 
-    <TextView
-        android:text="Hello World!"
+    <CheckBox
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="Remember me"
+        android:id="@+id/rememberCheckBox"
+        android:checked="false"
+        android:layout_marginBottom="110dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editText"
+        android:text="username"
+        android:layout_centerVertical="true"
+        android:layout_alignEnd="@+id/editText2"
+        android:layout_alignStart="@+id/editText2"
+        android:layout_above="@+id/editText2" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/editText2"
+        android:text="password"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:id="@+id/button"
+        android:layout_marginTop="39dp"
+        android:layout_alignTop="@+id/rememberCheckBox"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>
