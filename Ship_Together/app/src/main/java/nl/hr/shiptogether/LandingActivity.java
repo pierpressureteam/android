@@ -63,4 +63,6 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
             System.out.println("Probeer het nog maar eens een keer.");
         }
     }
+
+
 }
