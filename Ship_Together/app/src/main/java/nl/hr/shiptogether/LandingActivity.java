@@ -56,7 +56,7 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
 
         if(String.valueOf(username.getText()).equals("username") && String.valueOf(password.getText()).equals("password")){
             System.out.println("Gefeliciteerd, u bent ingelogd!");
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, MapDataActivity.class);
 
             startActivity(intent);
         } else {

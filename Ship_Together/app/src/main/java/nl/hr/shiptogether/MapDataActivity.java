@@ -5,12 +5,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
+public class MapDataActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_mapdata);
         setContentView(R.layout.fragment_map);
         addMapFragment();
     }
@@ -22,4 +22,5 @@ public class MainActivity extends AppCompatActivity {
         transaction.add(R.id.mapView, fragment);
         transaction.commit();
     }
+
 }

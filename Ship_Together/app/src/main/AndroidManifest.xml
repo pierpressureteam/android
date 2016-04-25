@@ -3,7 +3,6 @@
     package="nl.hr.shiptogether">
 
     <application
-
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -19,8 +18,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyBlu9ICqbGnKpl1p3IrJFJaWDpIyr1oPvA"/>
-        <activity android:name=".MainActivity"></activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBlu9ICqbGnKpl1p3IrJFJaWDpIyr1oPvA" />
+
+        <activity android:name=".MapDataActivity" />
+        <activity android:name=".DataActivity"></activity>
     </application>
 
 </manifest>
