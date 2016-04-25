@@ -42,7 +42,9 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent intent = new Intent(this, managementActivity.class);
+
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
