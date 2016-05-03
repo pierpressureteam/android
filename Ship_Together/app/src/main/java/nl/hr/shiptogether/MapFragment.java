@@ -13,6 +13,13 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.maps.android.MarkerManager;
+import com.google.maps.android.heatmaps.HeatmapTileProvider;
+import com.google.maps.android.heatmaps.WeightedLatLng;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * A fragment that launches other parts of the demo application.
@@ -44,23 +51,38 @@ public class MapFragment extends Fragment {
         double latitude = 51.9244;
         double longitude = 4.4777;
 
-        // create marker
-        MarkerOptions marker = new MarkerOptions().position(
-                new LatLng(latitude, longitude)).title("Hello Maps");
 
-        // Changing marker icon
-        marker.icon(BitmapDescriptorFactory
-                .defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
 
-        // adding marker
-        googleMap.addMarker(marker);
+
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(new LatLng(latitude, longitude)).zoom(12).build();
         googleMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
 
         // Perform any camera updates here
+
+        LatLng lat = new LatLng(51.85, 4.43);
+        LatLng latlng = new LatLng(51.90, 4.44);
+        WeightedLatLng weightedLatLng2 = new WeightedLatLng(latlng, 50000.0);
+        WeightedLatLng weightedLatLng = new WeightedLatLng(lat, 50000.0);
+        ArrayList list = new ArrayList();
+
+        list.add(0, weightedLatLng);
+        list.add(1, weightedLatLng2);
+        weightedLatLngListToHeatmap(list);
+
         return v;
+    }
+
+    // passes a list of weightedlatlng objects to the map and generates a heatmap based on it.
+    public void weightedLatLngListToHeatmap(ArrayList list){
+
+        HeatmapTileProvider.Builder mBuilder = new HeatmapTileProvider.Builder();
+        mBuilder.radius(25);
+        mBuilder.weightedData(list);
+        HeatmapTileProvider mProvider = mBuilder.build();
+
+        googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
     }
 
     @Override
