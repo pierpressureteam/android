@@ -16,7 +16,7 @@ public class SocketHandler {
 
             String message = "DIT IS EEN TEST, GEEN PANIEK!";
 
-            String serverIp = "127.0.0.1";
+            String serverIp = "145.24.222.149";
             Socket client = new Socket(serverIp, 4444);  //connect to server
             PrintWriter printwriter = new PrintWriter(client.getOutputStream(), true);
             printwriter.write(message);  //write the message to output stream
