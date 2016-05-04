@@ -24,6 +24,9 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
         loginButton = (Button) findViewById(R.id.button);
 
         loginButton.setOnClickListener(LandingActivity.this);
+
+        SocketHandler socketHandler = new SocketHandler();
+        socketHandler.socketConnection();
     }
 
     @Override
