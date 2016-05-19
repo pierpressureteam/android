@@ -12,7 +12,6 @@ import android.widget.EditText;
 
 public class LandingActivity extends AppCompatActivity implements View.OnClickListener {
 
-
     private Button loginButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,9 +21,22 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
         setSupportActionBar(toolbar);
 
         loginButton = (Button) findViewById(R.id.button);
-
         loginButton.setOnClickListener(LandingActivity.this);
+
+        final Button accountCreateBtn = (Button) findViewById(R.id.button2);
+        accountCreateBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                openAcountCreation();
+            }
+        });
     }
+
+    public void openAcountCreation(){
+        Intent intent = new Intent(this, CreateAcount.class);
+        startActivity(intent);
+    }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -48,7 +60,6 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
     public void onClick(View v) {
         EditText username = (EditText) findViewById(R.id.editText);
@@ -56,13 +67,11 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
 
         if(String.valueOf(username.getText()).equals("username") && String.valueOf(password.getText()).equals("password")){
             System.out.println("Gefeliciteerd, u bent ingelogd!");
-            Intent intent = new Intent(this, MainActivity.class);
 
+            Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         } else {
             System.out.println("Probeer het nog maar eens een keer.");
         }
     }
-
-
 }
