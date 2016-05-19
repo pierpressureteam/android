@@ -29,6 +29,13 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
                 openAcountCreation();
             }
         });
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SocketHandler socketHandler = new SocketHandler();
+                socketHandler.socketConnection();
+            }
+        }).start();
     }
 
     public void openAcountCreation(){
@@ -54,7 +61,9 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent intent = new Intent(this, managementActivity.class);
+
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
@@ -68,7 +77,7 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
         if(String.valueOf(username.getText()).equals("username") && String.valueOf(password.getText()).equals("password")){
             System.out.println("Gefeliciteerd, u bent ingelogd!");
 
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, MenuActivity.class);
             startActivity(intent);
         } else {
             System.out.println("Probeer het nog maar eens een keer.");
