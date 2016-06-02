@@ -10,6 +10,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.io.IOException;
+
+import socketclient.SocketClient;
+import objectslibrary.User;
+import objectslibrary.SocketObjectWrapper;
+
 public class LandingActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button loginButton;
@@ -39,7 +45,7 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     public void openAcountCreation(){
-        Intent intent = new Intent(this, CreateAcount.class);
+        Intent intent = new Intent(this, CreateAccount.class);
         startActivity(intent);
     }
 
@@ -74,7 +80,25 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
         EditText username = (EditText) findViewById(R.id.editText);
         EditText password = (EditText) findViewById(R.id.editText2);
 
-        if(String.valueOf(username.getText()).equals("username") && String.valueOf(password.getText()).equals("password")){
+        SocketClient sc = new SocketClient();
+
+        String sUsername = String.valueOf(username);
+        String sPassword = String.valueOf(password);
+
+        User user = new User(sUsername, sPassword, "email currently not being validated!");
+        SocketObjectWrapper sow = new SocketObjectWrapper(user, 1);
+
+        boolean success = false;
+
+        try {
+            success = (boolean) sc.communicateWithSocket(sow);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        if(success){
             System.out.println("Gefeliciteerd, u bent ingelogd!");
 
             Intent intent = new Intent(this, MenuActivity.class);
