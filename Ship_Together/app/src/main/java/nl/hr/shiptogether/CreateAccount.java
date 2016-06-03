@@ -42,7 +42,7 @@ public class CreateAccount extends AppCompatActivity {
                         System.out.println(sUsername);
                         System.out.println(sPassword);
 
-                        User user = new User(sUsername, sPassword, "email currently not being entered!");
+                        User user = new User(sUsername, sPassword);
                         SocketObjectWrapper sow = new SocketObjectWrapper(user, 2);
 
                         new NetworkHandler().execute(sow);

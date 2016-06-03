@@ -71,8 +71,8 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
                 editor.commit();
 
                 System.out.println(sharedpreferences.getAll());
-                //Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
-                //startActivity(intent);
+                Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
+                startActivity(intent);
             } else {
                 Toast toast = Toast.makeText(getApplicationContext(), "Username or password is incorrect", Toast.LENGTH_SHORT);
                 toast.show();
@@ -146,7 +146,7 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
         System.out.println(sUsername);
         System.out.println(sPassword);
 
-        User user = new User(sUsername, sPassword, "email currently not being validated!");
+        User user = new User(sUsername, sPassword);
         SocketObjectWrapper sow = new SocketObjectWrapper(user, 1);
 
         new NetworkHandler().execute(sow);
