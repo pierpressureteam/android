@@ -34,17 +34,13 @@ public class CreateAccount extends AppCompatActivity {
 
             //check if password is valid
             public void onClick(View v) {
-                if(pass.getText().toString().length() <6){
+                if (pass.getText().toString().length() < 6) {
                     notifyUser("Password needs to be at least 6 characters");
-                }
-                else if(!pass.getText().toString().equals(repeatPass.getText().toString())){
+                } else if (!pass.getText().toString().equals(repeatPass.getText().toString())) {
                     notifyUser("The repeat password is not the same as the password.");
                 } else {
-                    EditText username = (EditText) findViewById(R.id.txtUsername);
-                    EditText password = (EditText) findViewById(R.id.txtPassword);
-
-                    String sUsername = username.getText().toString();
-                    String sPassword = password.getText().toString();
+                    String sUsername = name.getText().toString();
+                    String sPassword = pass.getText().toString();
 
                     System.out.println(sUsername);
                     System.out.println(sPassword);
@@ -60,37 +56,35 @@ public class CreateAccount extends AppCompatActivity {
         });
     }
 
-    private void notifyUser(String text){
-        Toast.makeText(getApplicationContext(),text,  Toast.LENGTH_LONG).show();
+    private void notifyUser(String text) {
+        Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
     }
 
     class NetworkHandler extends AsyncTask<SocketObjectWrapper, Void, Boolean> {
-        private Exception exception;
         SocketClient sc = new SocketClient();
 
         @Override
         protected Boolean doInBackground(SocketObjectWrapper... params) {
-            Boolean success = false;
             SocketObjectWrapper sow = params[0];
 
             try {
-                success = (boolean) sc.communicateWithSocket(sow);
-                return success;
+                Object receivedObj = sc.communicateWithSocket(sow);
+                if (receivedObj != null) {
+                    return true;
+                } else {
+                    return false;
+                }
 
             } catch (IOException e) {
                 e.printStackTrace();
-                System.out.println("nope");
                 return null;
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
-                System.out.println("Le nope");
                 return null;
             }
         }
 
         protected void onPostExecute(Boolean success) {
-
-
             if (success) {
                 Intent intent = new Intent(getApplicationContext(), LandingActivity.class);
                 startActivity(intent);
@@ -98,7 +92,6 @@ public class CreateAccount extends AppCompatActivity {
                 Toast toast = Toast.makeText(getApplicationContext(), "Username and/or e-mail are already taken.", Toast.LENGTH_SHORT);
                 toast.show();
             }
-
         }
     }
 }
