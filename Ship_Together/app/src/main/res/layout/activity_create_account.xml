@@ -27,8 +27,8 @@
         android:ems="10"
         android:hint="Password"
         android:id="@+id/txtPassword"
-        android:layout_below="@+id/txtUsername"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@+id/txtEmail"
+        android:layout_alignStart="@+id/txtEmail" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -38,13 +38,43 @@
         android:ems="10"
         android:id="@+id/txtRepeatPassword"
         android:layout_below="@+id/txtPassword"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignStart="@+id/txtPassword" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Create"
         android:id="@+id/btnCreateAcc"
-        android:layout_centerVertical="true"
+        android:layout_marginTop="65dp"
+        android:layout_below="@+id/nmbrMMSI"
         android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:ems="10"
+        android:id="@+id/txtEmail"
+        android:layout_below="@+id/txtUsername"
+        android:layout_alignStart="@+id/txtUsername"
+        android:hint="Email" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/nmbrMMSI"
+        android:layout_below="@+id/txtRepeatPassword"
+        android:layout_centerHorizontal="true"
+        android:hint="MMSI of ship" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner"
+        android:layout_below="@+id/nmbrMMSI"
+        android:layout_alignEnd="@+id/nmbrMMSI"
+        android:layout_alignStart="@+id/nmbrMMSI"
+        android:spinnerMode="dropdown" />
 </RelativeLayout>
