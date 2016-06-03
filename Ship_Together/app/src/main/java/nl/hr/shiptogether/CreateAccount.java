@@ -22,38 +22,34 @@ public class CreateAccount extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_acount);
 
-
         final Button button = (Button) findViewById(R.id.btnCreateAcc);
-        button.setOnClickListener(new View.OnClickListener() {
+        if (button != null) {
+            button.setOnClickListener(new View.OnClickListener() {
 
-            EditText name = (EditText) findViewById(R.id.txtUsername);
-            EditText pass = (EditText) findViewById(R.id.txtPassword);
-            EditText repeatPass = (EditText) findViewById(R.id.txtRepeatPassword);
+                EditText name = (EditText) findViewById(R.id.txtUsername);
+                EditText pass = (EditText) findViewById(R.id.txtPassword);
+                EditText repeatPass = (EditText) findViewById(R.id.txtRepeatPassword);
 
-            //todo check if username is availible
+                public void onClick(View v) {
+                    if (pass.getText().toString().length() < 6) {
+                        notifyUser("Password needs to be at least 6 characters");
+                    } else if (!pass.getText().toString().equals(repeatPass.getText().toString())) {
+                        notifyUser("The repeat password is not the same as the password.");
+                    } else {
+                        String sUsername = name.getText().toString();
+                        String sPassword = pass.getText().toString();
 
-            //check if password is valid
-            public void onClick(View v) {
-                if (pass.getText().toString().length() < 6) {
-                    notifyUser("Password needs to be at least 6 characters");
-                } else if (!pass.getText().toString().equals(repeatPass.getText().toString())) {
-                    notifyUser("The repeat password is not the same as the password.");
-                } else {
-                    String sUsername = name.getText().toString();
-                    String sPassword = pass.getText().toString();
+                        System.out.println(sUsername);
+                        System.out.println(sPassword);
 
-                    System.out.println(sUsername);
-                    System.out.println(sPassword);
+                        User user = new User(sUsername, sPassword, "email currently not being entered!");
+                        SocketObjectWrapper sow = new SocketObjectWrapper(user, 2);
 
-                    User user = new User(sUsername, sPassword, "email currently not being entered!");
-                    SocketObjectWrapper sow = new SocketObjectWrapper(user, 2);
-
-                    new NetworkHandler().execute(sow);
+                        new NetworkHandler().execute(sow);
+                    }
                 }
-
-
-            }
-        });
+            });
+        }
     }
 
     private void notifyUser(String text) {
