@@ -16,6 +16,7 @@ import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.google.maps.android.heatmaps.WeightedLatLng;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A fragment that launches other parts of the demo application.
@@ -47,20 +48,21 @@ public class MapFragment extends Fragment {
         double latitude = 51.9244;
         double longitude = 4.4777;
 
-
-
-
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(new LatLng(latitude, longitude)).zoom(12).build();
         googleMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
 
         // Perform any camera updates here
+        //todo get coordinates from database
+
 
         LatLng lat = new LatLng(51.85, 4.43);
+        WeightedLatLng weightedLatLng = new WeightedLatLng(lat, 50000.0);
+
         LatLng latlng = new LatLng(51.90, 4.44);
         WeightedLatLng weightedLatLng2 = new WeightedLatLng(latlng, 50000.0);
-        WeightedLatLng weightedLatLng = new WeightedLatLng(lat, 50000.0);
+
         ArrayList list = new ArrayList();
 
         list.add(0, weightedLatLng);

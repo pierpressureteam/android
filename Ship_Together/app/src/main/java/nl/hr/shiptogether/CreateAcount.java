@@ -2,7 +2,6 @@ package nl.hr.shiptogether;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,6 +23,7 @@ public class CreateAcount extends AppCompatActivity {
             EditText repeatPass = (EditText) findViewById(R.id.txtRepeatPassword);
 
             //todo check if username is availible
+
             //check if password is valid
             public void onClick(View v) {
                 if(pass.getText().toString().length() <6){
@@ -38,9 +38,7 @@ public class CreateAcount extends AppCompatActivity {
         });
     }
 
-
     private void notifyUser(String text){
         Toast.makeText(getApplicationContext(),text,  Toast.LENGTH_LONG).show();
-
     }
 }
