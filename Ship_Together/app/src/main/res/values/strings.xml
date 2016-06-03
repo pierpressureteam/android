@@ -53,6 +53,12 @@
         <item>-1</item>
     </string-array>
 
+    <string name="choose_chart_prompt">Choose a chart</string>
+    <string-array name="chart_array">
+        <item>CO2 uitstoot - Snelheid</item>
+        <item>CO2 uitstoot - Tijd</item>
+    </string-array>
+
     <string name="pref_title_system_sync_settings">System sync settings</string>
 
     <!-- Example settings for Notifications -->
