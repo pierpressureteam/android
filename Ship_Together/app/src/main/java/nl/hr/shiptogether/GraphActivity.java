@@ -1,62 +1,111 @@
 package nl.hr.shiptogether;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import objectslibrary.Ship;
+import objectslibrary.SocketObjectWrapper;
+import socketclient.SocketClient;
 
 
 public class GraphActivity extends AppCompatActivity {
+    private Spinner chartSpinner;
+    private Button makeChartButton;
+
+    /*
+    class NetworkHandler extends AsyncTask<SocketObjectWrapper, Void, ArrayList<Ship>> {
+        private Exception exception;
+        SocketClient sc = new SocketClient();
+
+        @Override
+        protected ArrayList<Ship> doInBackground(SocketObjectWrapper... params) {
+            SocketObjectWrapper sow = params[0];
+
+            try {
+                success = (boolean) sc.communicateWithSocket(sow);
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                return null;
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Boolean success) {
+
+
+            if (success) {
+                Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
+                startActivity(intent);
+            } else {
+                Toast toast = Toast.makeText(getApplicationContext(), "Username or password is incorrect", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+
+        }
+    }*/
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
 
-        CreateLineChart();
+
+
+        addListenerOnButton();
+        //addListenerOnSpinnerItemSelection();
 
     }
-    public LineChart CreateLineChart() {
-        LineChart lineChart = (LineChart) findViewById(R.id.chart);
 
-        LineDataSet newData = CreateLinechartDataSet();
-        ArrayList<String> labels = CreateLabelsForLineChart();
+    public void addListenerOnButton() {
 
-        LineData data = new LineData(labels, newData);
-        lineChart.setData(data); // set the data and list of lables into chart
-        return lineChart;
+        chartSpinner = (Spinner) findViewById(R.id.chartSpinner);
+        makeChartButton = (Button) findViewById(R.id.makeChartButton);
+
+        makeChartButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if(chartSpinner.getSelectedItem() == null) {
+
+                    Toast toast = Toast.makeText(getApplicationContext(), "Please select a chart", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+                else {
+                    String selectedChart = String.valueOf(chartSpinner.getSelectedItem());
+                    //make chart based on selected value of spinner
+                }
+
+
+
+            }
+
+        });
     }
 
-    public LineDataSet CreateLinechartDataSet() {
-        ArrayList<Entry> entries = new ArrayList<>();
-        entries.add(new Entry(4f, 0));
-        entries.add(new Entry(8f, 1));
-        entries.add(new Entry(6f, 2));
-        entries.add(new Entry(12f, 3));
-        entries.add(new Entry(18f, 4));
-        entries.add(new Entry(9f, 5));
-
-        LineDataSet dataset = new LineDataSet(entries, "# of Calls");
-        return dataset;
-    }
-
-    public ArrayList<String> CreateLabelsForLineChart() {
-        ArrayList<String> labels = new ArrayList<String>();
-        labels.add("January");
-        labels.add("February");
-        labels.add("March");
-        labels.add("April");
-        labels.add("May");
-        labels.add("June");
-        return labels;
-    }
 
 
 

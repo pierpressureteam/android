@@ -1,6 +1,8 @@
 package nl.hr.shiptogether;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -14,24 +16,30 @@ import android.widget.Toast;
 
 import java.io.IOException;
 
+import objectslibrary.Ship;
 import socketclient.SocketClient;
 import objectslibrary.User;
 import objectslibrary.SocketObjectWrapper;
 
 public class LandingActivity extends AppCompatActivity implements View.OnClickListener {
 
-    class NetworkHandler extends AsyncTask<SocketObjectWrapper, Void, Boolean> {
+    public static final String MyPREFERENCES = "MyPrefs" ;
+    private Button loginButton;
+    SharedPreferences sharedpreferences;
+
+
+    class NetworkHandler extends AsyncTask<SocketObjectWrapper, Void, Integer> {
         private Exception exception;
         SocketClient sc = new SocketClient();
 
         @Override
-        protected Boolean doInBackground(SocketObjectWrapper... params) {
-            Boolean success = false;
+        protected Integer doInBackground(SocketObjectWrapper... params) {
+            Integer MMSI;
             SocketObjectWrapper sow = params[0];
 
             try {
-                success = (boolean) sc.communicateWithSocket(sow);
-                return success;
+                MMSI = (Integer) sc.communicateWithSocket(sow);
+                return MMSI;
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -44,12 +52,27 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
             }
         }
 
-        protected void onPostExecute(Boolean success) {
+        protected void onPostExecute(Integer MMSI) {
 
 
-            if (success) {
-                Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
-                startActivity(intent);
+            if (MMSI != null) {
+
+                EditText textUsername = (EditText) findViewById(R.id.editText);
+                EditText textPassword = (EditText) findViewById(R.id.editText2);
+
+                String sUsername = textUsername.getText().toString();
+                String sPassword = textPassword.getText().toString();
+
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+
+                editor.putString("sharedPrefUsername",String.valueOf(sUsername));
+                editor.putString("sharedPrefPassword",String.valueOf(sPassword));
+                editor.putInt("sharedPrefMMSI", MMSI);
+                editor.commit();
+
+                System.out.println(sharedpreferences.getAll());
+                //Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
+                //startActivity(intent);
             } else {
                 Toast toast = Toast.makeText(getApplicationContext(), "Username or password is incorrect", Toast.LENGTH_SHORT);
                 toast.show();
@@ -58,7 +81,6 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    private Button loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +88,8 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_landing);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
         loginButton = (Button) findViewById(R.id.button);
         loginButton.setOnClickListener(LandingActivity.this);
