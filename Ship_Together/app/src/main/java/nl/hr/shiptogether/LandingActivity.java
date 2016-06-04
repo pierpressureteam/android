@@ -70,7 +70,6 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
                 editor.putInt("sharedPrefMMSI", MMSI);
                 editor.commit();
 
-                System.out.println(sharedpreferences.getAll());
                 Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
                 startActivity(intent);
             } else {

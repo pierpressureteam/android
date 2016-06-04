@@ -3,6 +3,7 @@ package nl.hr.shiptogether;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,46 +27,47 @@ import socketclient.SocketClient;
 
 
 public class GraphActivity extends AppCompatActivity {
+
+    public static final String MyPREFERENCES = "MyPrefs" ;
     private Spinner chartSpinner;
     private Button makeChartButton;
+    SharedPreferences sharedpreferences;
 
-    /*
-    class NetworkHandler extends AsyncTask<SocketObjectWrapper, Void, ArrayList<Ship>> {
+    class NetworkHandler extends AsyncTask<SocketObjectWrapper, Void,ArrayList<Ship>> {
         private Exception exception;
         SocketClient sc = new SocketClient();
 
         @Override
         protected ArrayList<Ship> doInBackground(SocketObjectWrapper... params) {
+            ArrayList<Ship> shipData;
             SocketObjectWrapper sow = params[0];
 
             try {
-                success = (boolean) sc.communicateWithSocket(sow);
-
+                shipData = (ArrayList<Ship>) sc.communicateWithSocket(sow);
+                return shipData;
 
             } catch (IOException e) {
                 e.printStackTrace();
+                System.out.println("nope");
                 return null;
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
+                System.out.println("Le nope");
                 return null;
             }
-            return null;
         }
 
-        protected void onPostExecute(Boolean success) {
+        protected void onPostExecute(ArrayList<Ship> shipData) {
 
 
-            if (success) {
-                Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
-                startActivity(intent);
+            if (shipData != null) {
+
+
             } else {
-                Toast toast = Toast.makeText(getApplicationContext(), "Username or password is incorrect", Toast.LENGTH_SHORT);
-                toast.show();
+
             }
-
         }
-    }*/
-
+    }
 
 
     @Override
@@ -89,18 +91,17 @@ public class GraphActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                if(chartSpinner.getSelectedItem() == null) {
 
-                    Toast toast = Toast.makeText(getApplicationContext(), "Please select a chart", Toast.LENGTH_SHORT);
-                    toast.show();
+                String selectedChart = String.valueOf(chartSpinner.getSelectedItem());
+                Integer MMSI = sharedpreferences.getInt("sharedPrefMMSI", 0);
+
+                if (selectedChart == "CO2 uitstoot - Tijd") {
+                    SocketObjectWrapper sow = new SocketObjectWrapper(new Ship(MMSI), 3);
+                    new NetworkHandler().execute(sow);
+                } else if (selectedChart == "CO2 uitstoot - Snelheid") {
+                    SocketObjectWrapper sow = new SocketObjectWrapper(new Ship(MMSI), 4);
+                    new NetworkHandler().execute(sow);
                 }
-                else {
-                    String selectedChart = String.valueOf(chartSpinner.getSelectedItem());
-                    //make chart based on selected value of spinner
-                }
-
-
-
             }
 
         });

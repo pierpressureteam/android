@@ -1,16 +1,36 @@
 package nl.hr.shiptogether;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.widget.EditText;
+import android.widget.Toast;
+
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import objectslibrary.SocketObjectWrapper;
+import socketclient.SocketClient;
 
 /**
  * Created by gover_000 on 3-6-2016.
  */
 public class Linechart {
+
+    private LineChart lineChart;
+
+    public Linechart(LineChart lineChart)
+    {
+        this.lineChart = lineChart;
+    }
+
+
+
     /*
     public LineChart CreateLineChart() {
         LineChart lineChart;
