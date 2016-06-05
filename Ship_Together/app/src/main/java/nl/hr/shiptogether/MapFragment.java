@@ -1,9 +1,15 @@
 package nl.hr.shiptogether;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import android.content.SharedPreferences;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -12,11 +18,16 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.maps.android.geometry.Point;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.google.maps.android.heatmaps.WeightedLatLng;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+
+import objectslibrary.Ship;
+import objectslibrary.SocketObjectWrapper;
+import socketclient.SocketClient;
 
 /**
  * A fragment that launches other parts of the demo application.
@@ -25,10 +36,14 @@ public class MapFragment extends Fragment {
 
     MapView mMapView;
     private GoogleMap googleMap;
+    SharedPreferences sharedpreferences;
+    public static final String MyPREFERENCES = "MyPrefs" ;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
         // inflate and return the layout
         View v = inflater.inflate(R.layout.fragment_map, container,
                 false);
@@ -45,35 +60,32 @@ public class MapFragment extends Fragment {
 
         googleMap = mMapView.getMap();
         // latitude and longitude
-        double latitude = 51.9244;
-        double longitude = 4.4777;
 
-        CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(new LatLng(latitude, longitude)).zoom(12).build();
-        googleMap.animateCamera(CameraUpdateFactory
-                .newCameraPosition(cameraPosition));
 
         // Perform any camera updates here
         //todo get coordinates from database
+        sharedpreferences = MapDataActivity.context.getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
+        int MMSI = sharedpreferences.getInt("sharedPrefMMSI", 0);;
 
-        LatLng lat = new LatLng(51.85, 4.43);
-        WeightedLatLng weightedLatLng = new WeightedLatLng(lat, 50000.0);
+        System.out.println(MMSI);
 
-        LatLng latlng = new LatLng(51.90, 4.44);
-        WeightedLatLng weightedLatLng2 = new WeightedLatLng(latlng, 50000.0);
-
-        ArrayList list = new ArrayList();
-
-        list.add(0, weightedLatLng);
-        list.add(1, weightedLatLng2);
-        weightedLatLngListToHeatmap(list);
+        SocketObjectWrapper sow = new SocketObjectWrapper(new Ship(MMSI), 3);
+        System.out.println("starting socketconnection");
+        new NetworkHandler().execute(sow);
 
         return v;
     }
 
+    public void positionCamera(double latitude, double longitude){
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(new LatLng(latitude, longitude)).zoom(12).build();
+        googleMap.animateCamera(CameraUpdateFactory
+                .newCameraPosition(cameraPosition));
+    }
+
     // passes a list of weightedlatlng objects to the map and generates a heatmap based on it.
-    public void weightedLatLngListToHeatmap(ArrayList list){
+    public void weightedLatLngListToHeatmap(ArrayList<WeightedLatLng> list){
 
         HeatmapTileProvider.Builder mBuilder = new HeatmapTileProvider.Builder();
         mBuilder.radius(25);
@@ -81,6 +93,67 @@ public class MapFragment extends Fragment {
         HeatmapTileProvider mProvider = mBuilder.build();
 
         googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+    }
+
+    public WeightedLatLng ShipToWeightedLatLng(Ship ship){
+        double lat = ship.getLatitude();
+        double lng = ship.getLongitude();
+        double weight = 50000; //ship.carbonFootprint();
+        LatLng latLng = new LatLng(lat, lng);
+        Log.i("Latitude", lat + "");
+        Log.i("Longitude", lng + "");
+
+        WeightedLatLng weightedLatLng = new WeightedLatLng(latLng, weight);
+
+        return weightedLatLng;
+    }
+
+    class NetworkHandler extends AsyncTask<SocketObjectWrapper, Void, ArrayList<Ship>> {
+        private Exception exception;
+        SocketClient sc = new SocketClient();
+
+        @Override
+        protected ArrayList<Ship> doInBackground(SocketObjectWrapper... params) {
+            ArrayList<Ship> shipData;
+            SocketObjectWrapper sow = params[0];
+
+            try {
+                shipData = (ArrayList<Ship>) sc.communicateWithSocket(sow);
+                System.out.println("returning shipdata");
+                return shipData;
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("nope");
+                return null;
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                System.out.println("Le nope");
+                return null;
+            }
+        }
+
+        protected void onPostExecute(ArrayList<Ship> shipLocationEmissionData) {
+            ArrayList<WeightedLatLng> weightedLatLngArrayList = new ArrayList();
+            double latitudeCamera = 51.9244;
+            double longitudeCamera = 4.4777;
+
+            if (shipLocationEmissionData != null) {
+                for (Ship ship : shipLocationEmissionData){
+                    WeightedLatLng weightedLatLng = ShipToWeightedLatLng(ship);
+                    weightedLatLngArrayList.add(weightedLatLng);
+
+                    latitudeCamera = ship.getLatitude();
+                    longitudeCamera = ship.getLongitude();
+                }
+                weightedLatLngListToHeatmap(weightedLatLngArrayList);
+
+                positionCamera(latitudeCamera, longitudeCamera);
+
+            } else {
+                Log.wtf("Array retrieved", "Array retrieved is somehow null.");
+            }
+        }
     }
 
     @Override

@@ -39,6 +39,7 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
 
             try {
                 MMSI = (Integer) sc.communicateWithSocket(sow);
+                System.out.println(MMSI);
                 return MMSI;
 
             } catch (IOException e) {
