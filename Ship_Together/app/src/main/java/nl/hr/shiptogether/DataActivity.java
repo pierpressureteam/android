@@ -67,7 +67,7 @@ public class DataActivity extends AppCompatActivity {
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         Integer MMSI = sharedpreferences.getInt("sharedPrefMMSI", 0);
 
-        SocketObjectWrapper sow = new SocketObjectWrapper(new Ship(MMSI), 5);
+        SocketObjectWrapper sow = new SocketObjectWrapper(new Ship(MMSI), 6);
         new NetworkHandler().execute(sow);
 
     }
