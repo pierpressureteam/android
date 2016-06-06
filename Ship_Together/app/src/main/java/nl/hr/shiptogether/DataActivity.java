@@ -14,6 +14,8 @@ import com.github.mikephil.charting.data.LineData;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.RunnableFuture;
 
 import objectslibrary.Ship;
@@ -71,12 +73,17 @@ public class DataActivity extends AppCompatActivity {
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         Integer MMSI = sharedpreferences.getInt("sharedPrefMMSI", 0);
 
-        SocketObjectWrapper sow = new SocketObjectWrapper(new Ship(MMSI), 6);
+        final SocketObjectWrapper sow = new SocketObjectWrapper(new Ship(MMSI), 6);
         new NetworkHandler().execute(sow);
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                new NetworkHandler().execute(sow);
+            }
 
+        }, 0, 1000 * 60);
     }
-
-
 
     private Runnable refreshTextView = new Runnable() {
         public void run() {
@@ -88,10 +95,10 @@ public class DataActivity extends AppCompatActivity {
             MMSIView.setText(MMSI.toString());
             SOGView.setText( Double.toString(Math.round(shipData.getSpeed())) + " km/h");
             CarbonFootprintView.setText(Double.toString(Math.round(shipData.carbonFootprint())) + " KG");
-            System.out.println(SOGView);
-            System.out.println(CarbonFootprintView);
         }
     };
+
+
 
 }
 
