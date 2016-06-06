@@ -56,7 +56,7 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
         protected void onPostExecute(Integer MMSI) {
 
 
-            if (MMSI != null) {
+            if (MMSI != 0) {
 
                 EditText textUsername = (EditText) findViewById(R.id.editText);
                 EditText textPassword = (EditText) findViewById(R.id.editText2);
