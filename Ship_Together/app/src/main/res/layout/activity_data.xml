@@ -65,22 +65,14 @@
         android:id="@+id/CarbonFootprinttextView"
         android:layout_alignBottom="@+id/textView5"
         android:layout_alignStart="@+id/SOGtextView" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Cargo Weight"
-        android:id="@+id/textView6"
-        android:layout_below="@+id/textView5"
-        android:layout_marginTop="20dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="5.3 tonnes"
-        android:id="@+id/CargoWeighttextView"
-        android:layout_alignBottom="@+id/textView6"
-        android:layout_alignStart="@+id/SOGtextView" />
+        android:text="Latest Data"
+        android:id="@+id/textView2"
+        android:layout_above="@+id/MMSItextView"
+        android:layout_toEndOf="@+id/textView" />
 
 </RelativeLayout>

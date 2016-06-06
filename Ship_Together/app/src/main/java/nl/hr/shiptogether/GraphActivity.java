@@ -44,16 +44,14 @@ public class GraphActivity extends AppCompatActivity {
 
             try {
                 shipData = (ArrayList<Ship>) sc.communicateWithSocket(sow);
-                System.out.println("returning shipdata");
+                System.out.println("shipdata returned");
                 return shipData;
 
             } catch (IOException e) {
                 e.printStackTrace();
-                System.out.println("nope");
                 return null;
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
-                System.out.println("Le nope");
                 return null;
             }
         }
@@ -66,8 +64,8 @@ public class GraphActivity extends AppCompatActivity {
                 LineChart lineChart = (LineChart) findViewById(R.id.chart);
                 LineData lineData = new Linechart().CreateLineData(shipData, getApplicationContext());
                 lineChart.setData(lineData);
+                System.out.println("linedata made");
                 lineChart.invalidate();
-                System.out.println("Chart data set");
 
             } else {
 
@@ -91,28 +89,32 @@ public class GraphActivity extends AppCompatActivity {
 
         chartSpinner = (Spinner) findViewById(R.id.chartSpinner);
         makeChartButton = (Button) findViewById(R.id.makeChartButton);
+        System.out.println("button clicked");
 
 
         makeChartButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                System.out.println("buttonclicked");
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 String selectedChart = String.valueOf(chartSpinner.getSelectedItem());
                 Integer MMSI = sharedpreferences.getInt("sharedPrefMMSI", 0);
-
+                System.out.println("MMSI retrieved");
                 if (selectedChart.equals("CO2 uitstoot - Tijd")) {
+                    SocketObjectWrapper sow = new SocketObjectWrapper(new Ship(MMSI), 3);
                     editor.putString("sharedPrefChartType", "tijd");
                     editor.commit();
+                    System.out.println("graph - tijd");
+                    new NetworkHandler().execute(sow);
                 } else if (selectedChart.equals("CO2 uitstoot - Snelheid")) {
+                    SocketObjectWrapper sow = new SocketObjectWrapper(new Ship(MMSI), 4);
                     editor.putString("sharedPrefChartType", "snelheid");
                     editor.commit();
+                    System.out.println("graph - snelheid");
+                    new NetworkHandler().execute(sow);
                 }
 
-                SocketObjectWrapper sow = new SocketObjectWrapper(new Ship(MMSI), 3);
-                System.out.println("starting socketconnection");
-                new NetworkHandler().execute(sow);
+
             }
 
         });

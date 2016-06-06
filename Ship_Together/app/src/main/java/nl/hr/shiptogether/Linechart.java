@@ -1,34 +1,26 @@
 package nl.hr.shiptogether;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.widget.EditText;
-import android.widget.Toast;
 
-import com.github.mikephil.charting.charts.LineChart;
+
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
-import java.io.IOException;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 import objectslibrary.Ship;
-import objectslibrary.SocketObjectWrapper;
-import socketclient.SocketClient;
 
 /**
  * Created by gover_000 on 3-6-2016.
  */
 public class Linechart {
 
-    private LineChart lineChart;
     SharedPreferences sharedpreferences;
     public static final String MyPREFERENCES = "MyPrefs";
 
@@ -41,7 +33,6 @@ public class Linechart {
         ArrayList<String> labels = CreateLabelsForLineChart(shipData);
 
         LineData data = new LineData(labels, newData);
-        System.out.println("chart data created");
         return data;
     }
 
@@ -49,8 +40,8 @@ public class Linechart {
     public LineDataSet CreateLinechartDataSet(ArrayList<Ship> shipData) {
 
         ArrayList<Entry> entries = new ArrayList<>();
-        System.out.println("start creating line data");
-        System.out.println("size of shipdata: "+ shipData.size());
+
+        System.out.println("making carbonfootprint dataset");
         for (int i = 0; i < shipData.size(); i++) {
             Ship currentShipData = shipData.get(i);
             float carbonFootprint = (float) currentShipData.carbonFootprint();
@@ -59,38 +50,40 @@ public class Linechart {
         }
 
         LineDataSet dataset = new LineDataSet(entries, "KG of CO2");
-        System.out.println("line data created");
+        System.out.println("returning dataset");
         return dataset;
-
     }
 
     public ArrayList<String> CreateLabelsForLineChart(ArrayList<Ship> shipData) {
         ArrayList<String> labels = new ArrayList<String>();
 
-        System.out.println("start creating labels");
         String chartType = sharedpreferences.getString("sharedPrefChartType", "");
+        System.out.println("checking graph type");
         if (chartType.equals("tijd")) {
+            System.out.println("graphtype = tijd");
             for (int i = 0; i < shipData.size(); i++)
             {
+
                 Ship currentShipData = shipData.get(i);
                 Long time = currentShipData.getTime();
-                Date timeStamp = new Date((long)time);
+                Date timeStamp = new Date(time);
                 DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
                 String timeString = df.format(timeStamp);
+                System.out.println(timeString);
                 labels.add(timeString);
             }
         } else {
+            System.out.println("graphtype = snelheid");
             for (int i = 0; i < shipData.size(); i++)
             {
                 Ship currentShipData = shipData.get(i);
                 double dShipSpeed = currentShipData.getSpeed();
                 String shipSpeed = String.valueOf(dShipSpeed);
+                System.out.println(shipSpeed);
                 labels.add(shipSpeed);
             }
         }
-        System.out.println("labels created");
+        System.out.println("returning labels");
         return labels;
     }
-
-
 }
