@@ -3,6 +3,7 @@ package nl.hr.shiptogether;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,57 +27,63 @@ import socketclient.SocketClient;
 
 
 public class GraphActivity extends AppCompatActivity {
+
+    public static final String MyPREFERENCES = "MyPrefs" ;
     private Spinner chartSpinner;
     private Button makeChartButton;
+    SharedPreferences sharedpreferences;
 
-    /*
-    class NetworkHandler extends AsyncTask<SocketObjectWrapper, Void, ArrayList<Ship>> {
+    class NetworkHandler extends AsyncTask<SocketObjectWrapper, Void,ArrayList<Ship>> {
         private Exception exception;
         SocketClient sc = new SocketClient();
 
         @Override
         protected ArrayList<Ship> doInBackground(SocketObjectWrapper... params) {
+            ArrayList<Ship> shipData;
             SocketObjectWrapper sow = params[0];
 
             try {
-                success = (boolean) sc.communicateWithSocket(sow);
-
+                shipData = (ArrayList<Ship>) sc.communicateWithSocket(sow);
+                System.out.println("returning shipdata");
+                return shipData;
 
             } catch (IOException e) {
                 e.printStackTrace();
+                System.out.println("nope");
                 return null;
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
+                System.out.println("Le nope");
                 return null;
             }
-            return null;
         }
 
-        protected void onPostExecute(Boolean success) {
+        protected void onPostExecute(ArrayList<Ship> shipData) {
 
 
-            if (success) {
-                Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
-                startActivity(intent);
+            if (shipData != null) {
+                System.out.println("making linedata");
+                LineChart lineChart = (LineChart) findViewById(R.id.chart);
+                LineData lineData = new Linechart().CreateLineData(shipData, getApplicationContext());
+                lineChart.setData(lineData);
+                lineChart.invalidate();
+                System.out.println("Chart data set");
+
             } else {
-                Toast toast = Toast.makeText(getApplicationContext(), "Username or password is incorrect", Toast.LENGTH_SHORT);
-                toast.show();
+
             }
-
         }
-    }*/
-
+    }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
-
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
 
         addListenerOnButton();
-        //addListenerOnSpinnerItemSelection();
 
     }
 
@@ -85,22 +92,27 @@ public class GraphActivity extends AppCompatActivity {
         chartSpinner = (Spinner) findViewById(R.id.chartSpinner);
         makeChartButton = (Button) findViewById(R.id.makeChartButton);
 
+
         makeChartButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                if(chartSpinner.getSelectedItem() == null) {
+                System.out.println("buttonclicked");
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                String selectedChart = String.valueOf(chartSpinner.getSelectedItem());
+                Integer MMSI = sharedpreferences.getInt("sharedPrefMMSI", 0);
 
-                    Toast toast = Toast.makeText(getApplicationContext(), "Please select a chart", Toast.LENGTH_SHORT);
-                    toast.show();
+                if (selectedChart.equals("CO2 uitstoot - Tijd")) {
+                    editor.putString("sharedPrefChartType", "tijd");
+                    editor.commit();
+                } else if (selectedChart.equals("CO2 uitstoot - Snelheid")) {
+                    editor.putString("sharedPrefChartType", "snelheid");
+                    editor.commit();
                 }
-                else {
-                    String selectedChart = String.valueOf(chartSpinner.getSelectedItem());
-                    //make chart based on selected value of spinner
-                }
 
-
-
+                SocketObjectWrapper sow = new SocketObjectWrapper(new Ship(MMSI), 3);
+                System.out.println("starting socketconnection");
+                new NetworkHandler().execute(sow);
             }
 
         });

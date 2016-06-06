@@ -39,6 +39,7 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
 
             try {
                 MMSI = (Integer) sc.communicateWithSocket(sow);
+                System.out.println(MMSI);
                 return MMSI;
 
             } catch (IOException e) {
@@ -70,7 +71,6 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
                 editor.putInt("sharedPrefMMSI", MMSI);
                 editor.commit();
 
-                System.out.println(sharedpreferences.getAll());
                 Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
                 startActivity(intent);
             } else {
