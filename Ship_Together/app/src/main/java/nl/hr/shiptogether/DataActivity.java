@@ -14,6 +14,7 @@ import com.github.mikephil.charting.data.LineData;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.RunnableFuture;
 
 import objectslibrary.Ship;
 import objectslibrary.SocketObjectWrapper;
@@ -24,18 +25,19 @@ public class DataActivity extends AppCompatActivity {
 
     SharedPreferences sharedpreferences;
     public static final String MyPREFERENCES = "MyPrefs";
+    Ship shipData;
 
-    class NetworkHandler extends AsyncTask<SocketObjectWrapper, Void, ArrayList<Ship>> {
+    class NetworkHandler extends AsyncTask<SocketObjectWrapper, Void, Ship> {
         private Exception exception;
         SocketClient sc = new SocketClient();
 
         @Override
-        protected ArrayList<Ship> doInBackground(SocketObjectWrapper... params) {
-            ArrayList<Ship> shipData;
+        protected Ship doInBackground(SocketObjectWrapper... params) {
+            Ship shipData;
             SocketObjectWrapper sow = params[0];
 
             try {
-                shipData = (ArrayList<Ship>) sc.communicateWithSocket(sow);
+                shipData = (Ship) sc.communicateWithSocket(sow);
                 return shipData;
 
             } catch (IOException e) {
@@ -47,11 +49,13 @@ public class DataActivity extends AppCompatActivity {
             }
         }
 
-        protected void onPostExecute(ArrayList<Ship> shipData) {
+        protected void onPostExecute(Ship shipData2) {
 
+            if (shipData2 != null) {
+                System.out.println("LOLOLOLOLOLOLOLOLOOLOOLOOLOLO");
+                shipData = shipData2;
+                refreshTextView.run();
 
-            if (shipData != null) {
-                refreshData(shipData);
             } else {
 
             }
@@ -73,18 +77,22 @@ public class DataActivity extends AppCompatActivity {
     }
 
 
-    public void refreshData(ArrayList<Ship> shipData){
-        Integer MMSI = sharedpreferences.getInt("sharedPrefMMSI", 0);
-        TextView MMSIView = (TextView) findViewById(R.id.MMSItextView);
-        TextView SOGView = (TextView) findViewById(R.id.SOGtextView);
-        TextView CarbonFootprintView = (TextView) findViewById(R.id.CarbonFootprinttextView);
-        Ship currentShipData = shipData.get(0);
 
-        MMSIView.setText(MMSI);
-        SOGView.setText( Double.toString(currentShipData.getSpeed()));
-        CarbonFootprintView.setText(Double.toString(currentShipData.carbonFootprint()));
+    private Runnable refreshTextView = new Runnable() {
+        public void run() {
+            Integer MMSI = sharedpreferences.getInt("sharedPrefMMSI", 0);
+            TextView MMSIView = (TextView) findViewById(R.id.MMSItextView);
+            TextView SOGView = (TextView) findViewById(R.id.SOGtextView);
+            TextView CarbonFootprintView = (TextView) findViewById(R.id.CarbonFootprinttextView);
 
-    }
-
+            MMSIView.setText(MMSI.toString());
+            SOGView.setText( Double.toString(Math.round(shipData.getSpeed())) + " km/h");
+            CarbonFootprintView.setText(Double.toString(Math.round(shipData.carbonFootprint())) + " KG");
+            System.out.println(SOGView);
+            System.out.println(CarbonFootprintView);
+        }
+    };
 
 }
+
+

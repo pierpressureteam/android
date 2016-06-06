@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="6546821"
+        android:text="0"
         android:id="@+id/MMSItextView"
         android:layout_above="@+id/textView3"
         android:layout_toEndOf="@+id/textView5"
@@ -43,7 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="10,1 km/h"
+        android:text="0 km/h"
         android:id="@+id/SOGtextView"
         android:layout_alignBottom="@+id/textView3"
         android:layout_alignStart="@+id/MMSItextView" />
@@ -61,7 +61,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="3.6 KG"
+        android:text="0 KG"
         android:id="@+id/CarbonFootprinttextView"
         android:layout_alignBottom="@+id/textView5"
         android:layout_alignStart="@+id/SOGtextView" />
