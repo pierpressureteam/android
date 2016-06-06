@@ -45,12 +45,10 @@ public class Linechart {
         for (int i = 0; i < shipData.size(); i++) {
             Ship currentShipData = shipData.get(i);
             float carbonFootprint = (float) currentShipData.carbonFootprint();
-            System.out.println(carbonFootprint);
             entries.add(new Entry(carbonFootprint, i));
         }
 
         LineDataSet dataset = new LineDataSet(entries, "KG of CO2");
-        System.out.println("returning dataset");
         return dataset;
     }
 
@@ -58,9 +56,7 @@ public class Linechart {
         ArrayList<String> labels = new ArrayList<String>();
 
         String chartType = sharedpreferences.getString("sharedPrefChartType", "");
-        System.out.println("checking graph type");
         if (chartType.equals("tijd")) {
-            System.out.println("graphtype = tijd");
             for (int i = 0; i < shipData.size(); i++)
             {
 
@@ -69,7 +65,6 @@ public class Linechart {
                 Date timeStamp = new Date(time);
                 DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
                 String timeString = df.format(timeStamp);
-                System.out.println(timeString);
                 labels.add(timeString);
             }
         } else {
@@ -79,11 +74,9 @@ public class Linechart {
                 Ship currentShipData = shipData.get(i);
                 double dShipSpeed = currentShipData.getSpeed();
                 String shipSpeed = String.valueOf(dShipSpeed);
-                System.out.println(shipSpeed);
                 labels.add(shipSpeed);
             }
         }
-        System.out.println("returning labels");
         return labels;
     }
 }

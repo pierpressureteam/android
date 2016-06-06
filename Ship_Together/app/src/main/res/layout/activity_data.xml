@@ -33,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Average SOG"
+        android:text="SOG"
         android:id="@+id/textView3"
         android:layout_marginTop="20dp"
         android:layout_below="@+id/textView"

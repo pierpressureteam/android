@@ -25,7 +25,7 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Maak Grafiek"
+        android:text="Make Graph"
         android:id="@+id/makeChartButton"
         android:layout_alignParentEnd="true" />
 
