@@ -38,21 +38,20 @@ public class CreateAccount extends AppCompatActivity {
         if (button != null) {
             button.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    EditText name = (EditText) findViewById(R.id.txtUsername);
-                    EditText pass = (EditText) findViewById(R.id.txtPassword);
-                    EditText repeatPass = (EditText) findViewById(R.id.txtRepeatPassword);
-                    EditText email = (EditText) findViewById(R.id.txtEmail);
-                    EditText mmsi = (EditText) findViewById(R.id.nmbrMMSI);
-                    String sMMSI = mmsi.getText().toString();
-                    Spinner shipType = (Spinner) findViewById(R.id.spinner);
+                    try {
+                        EditText name = (EditText) findViewById(R.id.txtUsername);
+                        EditText pass = (EditText) findViewById(R.id.txtPassword);
+                        EditText repeatPass = (EditText) findViewById(R.id.txtRepeatPassword);
+                        EditText email = (EditText) findViewById(R.id.txtEmail);
+                        EditText mmsi = (EditText) findViewById(R.id.nmbrMMSI);
+                        String sMMSI = mmsi.getText().toString();
+                        Spinner shipType = (Spinner) findViewById(R.id.spinner);
 
-                    if (pass.getText().toString().length() < 6) {
-                        notifyUser("Password needs to be at least 6 characters");
-                    } else if (!pass.getText().toString().equals(repeatPass.getText().toString())) {
-                        notifyUser("The repeat password is not the same as the password.");
-                    } else {
-                        if (name != null && pass != null && email != null && sMMSI != null && shipType != null) {
-
+                        if (pass.getText().toString().length() < 6) {
+                            notifyUser("Password needs to be at least 6 characters");
+                        } else if (!pass.getText().toString().equals(repeatPass.getText().toString())) {
+                            notifyUser("The repeat password is not the same as the password.");
+                        } else {
                             String sUsername = name.getText().toString();
                             String sPassword = pass.getText().toString();
                             String sEmail = email.getText().toString();
@@ -68,10 +67,10 @@ public class CreateAccount extends AppCompatActivity {
                             SocketObjectWrapper sow = new SocketObjectWrapper(user, 2);
 
                             new NetworkHandlerRegistration().execute(sow);
-                        } else {
-                            notifyUser("Please enter a correct value in all fields.");
-                        }
 
+                        }
+                    } catch (Exception e) {
+                        notifyUser("Please enter a correct value in all fields.");
                     }
                 }
             });
@@ -145,7 +144,7 @@ public class CreateAccount extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), LandingActivity.class);
                 startActivity(intent);
             } else {
-                Toast toast = Toast.makeText(getApplicationContext(), "Username and/or e-mail are already taken.", Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(getApplicationContext(), "Username and/or e-mail and/or MMSI are already taken.", Toast.LENGTH_SHORT);
                 toast.show();
             }
         }
