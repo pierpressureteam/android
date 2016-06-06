@@ -79,7 +79,7 @@ public class MapFragment extends Fragment {
 
     public void positionCamera(double latitude, double longitude){
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(new LatLng(latitude, longitude)).zoom(12).build();
+                .target(new LatLng(latitude, longitude)).zoom(13).build();
         googleMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
     }
@@ -95,10 +95,32 @@ public class MapFragment extends Fragment {
         googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
     }
 
-    public WeightedLatLng ShipToWeightedLatLng(Ship ship){
+    public double calculateMean(ArrayList<Ship> shipData)
+    {
+        double sum = 0;
+        double length = 0;
+        for(Ship ship : shipData){
+            sum += ship.carbonFootprint();
+            length++;
+        }
+
+        return sum/length;
+    }
+
+    public WeightedLatLng ShipToWeightedLatLng(Ship ship, double mean){
         double lat = ship.getLatitude();
         double lng = ship.getLongitude();
-        double weight = 50000; //ship.carbonFootprint();
+        double weight = 0;
+        if(ship.carbonFootprint() > mean * 1.2){
+            weight = 5;
+        } else if(ship.carbonFootprint() < mean * 0.8) {
+            weight = 1;
+        } else {
+            weight = 3;
+        }
+
+
+
         LatLng latLng = new LatLng(lat, lng);
         Log.i("Latitude", lat + "");
         Log.i("Longitude", lng + "");
@@ -137,10 +159,12 @@ public class MapFragment extends Fragment {
             ArrayList<WeightedLatLng> weightedLatLngArrayList = new ArrayList();
             double latitudeCamera = 51.9244;
             double longitudeCamera = 4.4777;
+            double mean = 0;
+            mean = calculateMean(shipLocationEmissionData);
 
             if (shipLocationEmissionData != null) {
                 for (Ship ship : shipLocationEmissionData){
-                    WeightedLatLng weightedLatLng = ShipToWeightedLatLng(ship);
+                    WeightedLatLng weightedLatLng = ShipToWeightedLatLng(ship, mean);
                     weightedLatLngArrayList.add(weightedLatLng);
 
                     latitudeCamera = ship.getLatitude();
