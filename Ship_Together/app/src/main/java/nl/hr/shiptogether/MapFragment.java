@@ -88,7 +88,7 @@ public class MapFragment extends Fragment {
     public void weightedLatLngListToHeatmap(ArrayList<WeightedLatLng> list){
 
         HeatmapTileProvider.Builder mBuilder = new HeatmapTileProvider.Builder();
-        mBuilder.radius(25);
+        mBuilder.radius(10);
         mBuilder.weightedData(list);
         HeatmapTileProvider mProvider = mBuilder.build();
 

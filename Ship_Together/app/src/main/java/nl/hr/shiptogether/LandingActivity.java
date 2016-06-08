@@ -55,7 +55,7 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
 
         protected void onPostExecute(Integer MMSI) {
 
-
+        if(MMSI != null) {
             if (MMSI != 0) {
 
                 EditText textUsername = (EditText) findViewById(R.id.editText);
@@ -66,8 +66,8 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
 
                 SharedPreferences.Editor editor = sharedpreferences.edit();
 
-                editor.putString("sharedPrefUsername",String.valueOf(sUsername));
-                editor.putString("sharedPrefPassword",String.valueOf(sPassword));
+                editor.putString("sharedPrefUsername", String.valueOf(sUsername));
+                editor.putString("sharedPrefPassword", String.valueOf(sPassword));
                 editor.putInt("sharedPrefMMSI", MMSI);
                 editor.commit();
 
@@ -77,6 +77,10 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
                 Toast toast = Toast.makeText(getApplicationContext(), "Username or password is incorrect", Toast.LENGTH_SHORT);
                 toast.show();
             }
+        } else {
+            Toast toast = Toast.makeText(getApplicationContext(), "Username or password is incorrect", Toast.LENGTH_SHORT);
+            toast.show();
+        }
 
         }
     }
