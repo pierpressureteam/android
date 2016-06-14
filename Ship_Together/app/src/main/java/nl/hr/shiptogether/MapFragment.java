@@ -1,6 +1,7 @@
 package nl.hr.shiptogether;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.maps.android.geometry.Point;
@@ -85,14 +88,26 @@ public class MapFragment extends Fragment {
     }
 
     // passes a list of weightedlatlng objects to the map and generates a heatmap based on it.
-    public void weightedLatLngListToHeatmap(ArrayList<WeightedLatLng> list){
+    public void dataPointsToMap(ArrayList<Ship> list, double mean){
 
-        HeatmapTileProvider.Builder mBuilder = new HeatmapTileProvider.Builder();
-        mBuilder.radius(10);
-        mBuilder.weightedData(list);
-        HeatmapTileProvider mProvider = mBuilder.build();
+        for(Ship ship : list){
+            int color = emissionToColor(ship.carbonFootprint());
 
-        googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+            Circle circle = googleMap.addCircle(new CircleOptions()
+                    .center(new LatLng(ship.getLatitude(), ship.getLongitude()))
+                    .radius(25)
+                    .strokeColor(color)
+                    .fillColor(color));
+        }
+    }
+
+    public int emissionToColor(double emission){
+        int R = (int) ((255 * emission) / emission);
+        int G = (int) ((255 * (100 - emission)) / emission);
+        int B = 0;
+        int color = Color.rgb(R, G, B);
+
+        return color;
     }
 
     public double calculateMean(ArrayList<Ship> shipData)
@@ -107,31 +122,16 @@ public class MapFragment extends Fragment {
         return sum/length;
     }
 
-    public WeightedLatLng ShipToWeightedLatLng(Ship ship, double mean){
+    public LatLng shipToLatLng(Ship ship){
         double lat = ship.getLatitude();
         double lng = ship.getLongitude();
-        double weight = 0;
-        if(ship.carbonFootprint() > mean * 1.2){
-            weight = 5;
-        } else if(ship.carbonFootprint() < mean * 0.8) {
-            weight = 1;
-        } else {
-            weight = 3;
-        }
-
-
 
         LatLng latLng = new LatLng(lat, lng);
-        Log.i("Latitude", lat + "");
-        Log.i("Longitude", lng + "");
 
-        WeightedLatLng weightedLatLng = new WeightedLatLng(latLng, weight);
-
-        return weightedLatLng;
+        return latLng;
     }
 
     class NetworkHandler extends AsyncTask<SocketObjectWrapper, Void, ArrayList<Ship>> {
-        private Exception exception;
         SocketClient sc = new SocketClient();
 
         @Override
@@ -141,36 +141,32 @@ public class MapFragment extends Fragment {
 
             try {
                 shipData = (ArrayList<Ship>) sc.communicateWithSocket(sow);
-                System.out.println("returning shipdata");
                 return shipData;
 
             } catch (IOException e) {
                 e.printStackTrace();
-                System.out.println("nope");
                 return null;
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
-                System.out.println("Le nope");
                 return null;
             }
         }
 
         protected void onPostExecute(ArrayList<Ship> shipLocationEmissionData) {
-            ArrayList<WeightedLatLng> weightedLatLngArrayList = new ArrayList();
+            ArrayList<LatLng> latLngArrayList = new ArrayList();
             double latitudeCamera = 51.9244;
             double longitudeCamera = 4.4777;
-            double mean = 0;
-            mean = calculateMean(shipLocationEmissionData);
+            double mean = calculateMean(shipLocationEmissionData);
 
             if (shipLocationEmissionData != null) {
                 for (Ship ship : shipLocationEmissionData){
-                    WeightedLatLng weightedLatLng = ShipToWeightedLatLng(ship, mean);
-                    weightedLatLngArrayList.add(weightedLatLng);
+                    LatLng latLng = shipToLatLng(ship);
+                    latLngArrayList.add(latLng);
 
                     latitudeCamera = ship.getLatitude();
                     longitudeCamera = ship.getLongitude();
                 }
-                weightedLatLngListToHeatmap(weightedLatLngArrayList);
+                dataPointsToMap(shipLocationEmissionData, mean);
 
                 positionCamera(latitudeCamera, longitudeCamera);
 
