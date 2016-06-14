@@ -5,12 +5,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.*;
 
 public class MenuActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button mapdatabutton;
     private Button databutton;
-    private Button graphbutton;
+    private ImageButton graphbutton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +20,7 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
 
         mapdatabutton = (Button) findViewById(R.id.mapdatabutton);
         databutton = (Button) findViewById(R.id.databutton);
-        graphbutton = (Button) findViewById(R.id.graphbutton);
+        graphbutton = (ImageButton) findViewById(R.id.graphbutton);
 
         mapdatabutton.setOnClickListener( MenuActivity.this);
         databutton.setOnClickListener( MenuActivity.this);
