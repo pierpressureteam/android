@@ -44,7 +44,6 @@ public class GraphActivity extends AppCompatActivity {
 
             try {
                 shipData = (ArrayList<Ship>) sc.communicateWithSocket(sow);
-                System.out.println("shipdata returned");
                 return shipData;
 
             } catch (IOException e) {
@@ -60,11 +59,9 @@ public class GraphActivity extends AppCompatActivity {
 
 
             if (shipData != null) {
-                System.out.println("making linedata");
                 LineChart lineChart = (LineChart) findViewById(R.id.chart);
                 LineData lineData = new Linechart().CreateLineData(shipData, getApplicationContext());
                 lineChart.setData(lineData);
-                System.out.println("linedata made");
                 lineChart.invalidate();
 
             } else {

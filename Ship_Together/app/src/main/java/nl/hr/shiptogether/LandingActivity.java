@@ -147,9 +147,6 @@ public class LandingActivity extends AppCompatActivity implements View.OnClickLi
         String sUsername = username.getText().toString();
         String sPassword = password.getText().toString();
 
-        System.out.println(sUsername);
-        System.out.println(sPassword);
-
         User user = new User(sUsername, sPassword);
         SocketObjectWrapper sow = new SocketObjectWrapper(user, 1);
 
