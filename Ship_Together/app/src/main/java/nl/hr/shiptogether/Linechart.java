@@ -12,6 +12,8 @@ import com.github.mikephil.charting.data.LineDataSet;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 
 import objectslibrary.Ship;
@@ -40,14 +42,17 @@ public class Linechart {
     public LineDataSet CreateLinechartDataSet(ArrayList<Ship> shipData) {
 
         ArrayList<Entry> entries = new ArrayList<>();
-
+        String chartType = sharedpreferences.getString("sharedPrefChartType", "");
+        if (chartType.equals("tijd")) {
+            Collections.reverse(shipData);
+        }
         for (int i = 0; i < shipData.size(); i++) {
             Ship currentShipData = shipData.get(i);
             float carbonFootprint = (float) currentShipData.carbonFootprint();
             entries.add(new Entry(carbonFootprint, i));
         }
 
-        LineDataSet dataset = new LineDataSet(entries, "KG CO2");
+        LineDataSet dataset = new LineDataSet(entries, "KG CO2 per Minuut");
         return dataset;
     }
 
@@ -58,11 +63,10 @@ public class Linechart {
         if (chartType.equals("tijd")) {
             for (int i = 0; i < shipData.size(); i++)
             {
-
                 Ship currentShipData = shipData.get(i);
                 Long time = currentShipData.getTime();
                 Date timeStamp = new Date(time);
-                DateFormat df = new SimpleDateFormat("dd/MM//yyyy HH:mm:ss");
+                DateFormat df = new SimpleDateFormat("dd/MM HH:mm:ss");
                 String timeString = df.format(timeStamp);
                 labels.add(timeString);
             }

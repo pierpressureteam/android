@@ -57,11 +57,19 @@ public class GraphActivity extends AppCompatActivity {
 
         protected void onPostExecute(ArrayList<Ship> shipData) {
 
-
             if (shipData != null) {
+                String selectedChart = String.valueOf(chartSpinner.getSelectedItem());
                 LineChart lineChart = (LineChart) findViewById(R.id.chart);
                 LineData lineData = new Linechart().CreateLineData(shipData, getApplicationContext());
                 lineChart.setData(lineData);
+
+                if (selectedChart.equals("CO2 uitstoot - Tijd")) {
+                    lineChart.setDescription("CO2 uitstoot tegen de tijd");
+                    lineChart.setDescriptionTextSize(14f);
+                } else {
+                    lineChart.setDescription("CO2 uitstoot tegen de snelheid");
+                    lineChart.setDescriptionTextSize(14f);
+                }
                 lineChart.invalidate();
 
             } else {
