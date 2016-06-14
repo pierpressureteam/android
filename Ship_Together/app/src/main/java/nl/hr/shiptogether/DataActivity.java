@@ -5,18 +5,11 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.LineData;
-
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.RunnableFuture;
 
 import objectslibrary.Ship;
 import objectslibrary.SocketObjectWrapper;
@@ -30,7 +23,6 @@ public class DataActivity extends AppCompatActivity {
     Ship shipData;
 
     class NetworkHandler extends AsyncTask<SocketObjectWrapper, Void, Ship> {
-        private Exception exception;
         SocketClient sc = new SocketClient();
 
         @Override
@@ -56,8 +48,6 @@ public class DataActivity extends AppCompatActivity {
             if (shipData2 != null) {
                 shipData = shipData2;
                 refreshTextView.run();
-
-            } else {
 
             }
         }
