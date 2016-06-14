@@ -54,7 +54,6 @@ public class DataActivity extends AppCompatActivity {
         protected void onPostExecute(Ship shipData2) {
 
             if (shipData2 != null) {
-                System.out.println("LOLOLOLOLOLOLOLOLOOLOOLOOLOLO");
                 shipData = shipData2;
                 refreshTextView.run();
 
