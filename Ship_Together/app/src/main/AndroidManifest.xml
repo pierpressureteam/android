@@ -25,7 +25,6 @@
 
        <!-- <activity android:name=".MainActivity" />-->
         <activity android:name=".CreateAccount"></activity>
-        <activity android:name=".managementActivity" />
         <activity android:name=".MapDataActivity" />
         <activity android:name=".DataActivity" />
         <activity android:name=".MenuActivity" />
