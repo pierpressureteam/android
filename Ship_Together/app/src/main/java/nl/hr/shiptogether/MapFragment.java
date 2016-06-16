@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,8 +78,19 @@ public class MapFragment extends Fragment {
     public void dataPointsToMap(ArrayList<Ship> list) {
 
         for (Ship ship : list) {
+            int color = 0;
+            if (gsd != null) {
+                System.out.println(gsd.getAverage());
+                System.out.println(gsd.getHighest());
+                System.out.println(gsd.getLowest());
+                color = emissionToColor(ship.carbonFootprint(), gsd.getLowest(), gsd.getHighest());
+            } else {
+                int MMSI = sharedpreferences.getInt("sharedPrefMMSI", 0);
+                SocketObjectWrapper sow2 = new SocketObjectWrapper(new Ship(MMSI), 7);
+                new NetworkHandlerGeneralData().execute(sow2);
+                break;
+            }
 
-            int color = emissionToColor(ship.carbonFootprint(), gsd.getLowest(), gsd.getHighest());
 
             googleMap.addCircle(new CircleOptions()
                     .center(new LatLng(ship.getLatitude(), ship.getLongitude()))
@@ -90,20 +100,15 @@ public class MapFragment extends Fragment {
         }
     }
 
-    public int mapValueToRange(double value, double lowestIn, double highestIn, double lowestOut, double highestOut){
-        return (int) ((value - lowestIn) * (highestOut - lowestOut) / (highestIn - lowestIn) + lowestOut);
-    }
-
     public int emissionToColor(double emission, double lowest, double highest) {
         double lowestOfRange = 0;
-        double highestOfRange = 255;
-        int mappedValue = mapValueToRange(emission, lowest, highest, lowestOfRange, highestOfRange);
-        System.out.println("0-255 value for emission: "+mappedValue);;
+        double highestOfRange = 100;
 
-        int R = ((255 * mappedValue) / mappedValue);
-        int G = ((255 * (100 - mappedValue)) / mappedValue);
-        int B = 0;
-        int color = Color.rgb(R, G, B);
+        int r = 0, g = 0 , b = 0;
+
+        //TODO make color change between a preset range of 5 colors, every 20% the color should change.
+
+        int color = Color.rgb(r, g, b);
 
         return color;
     }
@@ -140,8 +145,7 @@ public class MapFragment extends Fragment {
             gsd = gsdIn;
             gsdDone = true;
 
-            if(shipEmissionDataDone)
-            {
+            if (shipEmissionDataDone) {
                 dataPointsToMap(shipEmissionData);
             }
         }
@@ -181,8 +185,7 @@ public class MapFragment extends Fragment {
 
             shipEmissionDataDone = true;
             shipEmissionData = shipLocationEmissionData;
-            if(gsdDone)
-            {
+            if (gsdDone) {
                 dataPointsToMap(shipEmissionData);
             }
 
