@@ -31,7 +31,10 @@ public class MapFragment extends Fragment {
 
     MapView mMapView;
     private GoogleMap googleMap;
-    private GeneralShipData gsd;
+    private GeneralShipData gsd = new GeneralShipData();
+    private ArrayList<Ship> shipEmissionData = new ArrayList();
+    private boolean gsdDone = false;
+    private boolean shipEmissionDataDone = false;
     SharedPreferences sharedpreferences;
     public static final String MyPREFERENCES = "MyPrefs";
 
@@ -58,9 +61,10 @@ public class MapFragment extends Fragment {
         int MMSI = sharedpreferences.getInt("sharedPrefMMSI", 0);
 
         SocketObjectWrapper sow = new SocketObjectWrapper(new Ship(MMSI), 3);
-        SocketObjectWrapper sow2 = new SocketObjectWrapper(new Ship())
+        SocketObjectWrapper sow2 = new SocketObjectWrapper(new Ship(MMSI), 7);
+
+        new NetworkHandlerGeneralData().execute(sow2);
         new NetworkHandler().execute(sow);
-        new NetworkHandlerGeneralData().execute()
 
         return v;
     }
@@ -72,10 +76,11 @@ public class MapFragment extends Fragment {
                 .newCameraPosition(cameraPosition));
     }
 
-    public void dataPointsToMap(ArrayList<Ship> list, double mean) {
+    public void dataPointsToMap(ArrayList<Ship> list) {
 
         for (Ship ship : list) {
-            int color = emissionToColor(ship.carbonFootprint());
+
+            int color = emissionToColor(ship.carbonFootprint(), gsd.getLowest(), gsd.getHighest());
 
             googleMap.addCircle(new CircleOptions()
                     .center(new LatLng(ship.getLatitude(), ship.getLongitude()))
@@ -85,24 +90,22 @@ public class MapFragment extends Fragment {
         }
     }
 
-    public int emissionToColor(double emission) {
-        int R = (int) ((255 * emission) / emission);
-        int G = (int) ((255 * (100 - emission)) / emission);
+    public int mapValueToRange(double value, double lowestIn, double highestIn, double lowestOut, double highestOut){
+        return (int) ((value - lowestIn) * (highestOut - lowestOut) / (highestIn - lowestIn) + lowestOut);
+    }
+
+    public int emissionToColor(double emission, double lowest, double highest) {
+        double lowestOfRange = 0;
+        double highestOfRange = 255;
+        int mappedValue = mapValueToRange(emission, lowest, highest, lowestOfRange, highestOfRange);
+        System.out.println("0-255 value for emission: "+mappedValue);;
+
+        int R = ((255 * mappedValue) / mappedValue);
+        int G = ((255 * (100 - mappedValue)) / mappedValue);
         int B = 0;
         int color = Color.rgb(R, G, B);
 
         return color;
-    }
-
-    public double calculateMean(ArrayList<Ship> shipData) {
-        double sum = 0;
-        double length = 0;
-        for (Ship ship : shipData) {
-            sum += ship.carbonFootprint();
-            length++;
-        }
-
-        return sum / length;
     }
 
     public LatLng shipToLatLng(Ship ship) {
@@ -135,6 +138,12 @@ public class MapFragment extends Fragment {
 
         protected void onPostExecute(GeneralShipData gsdIn) {
             gsd = gsdIn;
+            gsdDone = true;
+
+            if(shipEmissionDataDone)
+            {
+                dataPointsToMap(shipEmissionData);
+            }
         }
     }
 
@@ -161,7 +170,6 @@ public class MapFragment extends Fragment {
             ArrayList<LatLng> latLngArrayList = new ArrayList();
             double latitudeCamera = 51.9244;
             double longitudeCamera = 4.4777;
-            double mean = calculateMean(shipLocationEmissionData);
 
             for (Ship ship : shipLocationEmissionData) {
                 LatLng latLng = shipToLatLng(ship);
@@ -170,7 +178,14 @@ public class MapFragment extends Fragment {
                 latitudeCamera = ship.getLatitude();
                 longitudeCamera = ship.getLongitude();
             }
-            dataPointsToMap(shipLocationEmissionData, mean);
+
+            shipEmissionDataDone = true;
+            shipEmissionData = shipLocationEmissionData;
+            if(gsdDone)
+            {
+                dataPointsToMap(shipEmissionData);
+            }
+
 
             positionCamera(latitudeCamera, longitudeCamera);
         }
