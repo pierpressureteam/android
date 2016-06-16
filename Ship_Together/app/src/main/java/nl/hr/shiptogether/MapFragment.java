@@ -22,6 +22,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import objectslibrary.GeneralShipData;
 import objectslibrary.Ship;
 import objectslibrary.SocketObjectWrapper;
 import socketclient.SocketClient;
@@ -30,6 +31,7 @@ public class MapFragment extends Fragment {
 
     MapView mMapView;
     private GoogleMap googleMap;
+    private GeneralShipData gsd;
     SharedPreferences sharedpreferences;
     public static final String MyPREFERENCES = "MyPrefs";
 
@@ -54,10 +56,11 @@ public class MapFragment extends Fragment {
         sharedpreferences = MapDataActivity.context.getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
         int MMSI = sharedpreferences.getInt("sharedPrefMMSI", 0);
-        ;
 
         SocketObjectWrapper sow = new SocketObjectWrapper(new Ship(MMSI), 3);
+        SocketObjectWrapper sow2 = new SocketObjectWrapper(new Ship())
         new NetworkHandler().execute(sow);
+        new NetworkHandlerGeneralData().execute()
 
         return v;
     }
@@ -109,6 +112,30 @@ public class MapFragment extends Fragment {
         LatLng latLng = new LatLng(lat, lng);
 
         return latLng;
+    }
+
+    class NetworkHandlerGeneralData extends AsyncTask<SocketObjectWrapper, Void, GeneralShipData> {
+        SocketClient sc = new SocketClient();
+
+        @Override
+        protected GeneralShipData doInBackground(SocketObjectWrapper... params) {
+            GeneralShipData shipData;
+            SocketObjectWrapper sow = params[0];
+
+            try {
+                shipData = (GeneralShipData) sc.communicateWithSocket(sow);
+                return shipData;
+
+            } catch (IOException e) {
+                return null;
+            } catch (ClassNotFoundException e) {
+                return null;
+            }
+        }
+
+        protected void onPostExecute(GeneralShipData gsdIn) {
+            gsd = gsdIn;
+        }
     }
 
     class NetworkHandler extends AsyncTask<SocketObjectWrapper, Void, ArrayList<Ship>> {
