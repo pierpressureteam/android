@@ -1,22 +1,18 @@
 package nl.hr.shiptogether;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,7 +30,6 @@ public class GraphActivity extends AppCompatActivity {
     SharedPreferences sharedpreferences;
 
     class NetworkHandler extends AsyncTask<SocketObjectWrapper, Void,ArrayList<Ship>> {
-        private Exception exception;
         SocketClient sc = new SocketClient();
 
         @Override
@@ -45,7 +40,6 @@ public class GraphActivity extends AppCompatActivity {
             try {
                 shipData = (ArrayList<Ship>) sc.communicateWithSocket(sow);
                 return shipData;
-
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;
@@ -60,19 +54,37 @@ public class GraphActivity extends AppCompatActivity {
             if (shipData != null) {
                 String selectedChart = String.valueOf(chartSpinner.getSelectedItem());
                 LineChart lineChart = (LineChart) findViewById(R.id.chart);
+                double dCumulativeEmmision = 0.0;
+                String sCumulativeEmmision = "";
+
                 LineData lineData = new Linechart().CreateLineData(shipData, getApplicationContext());
                 lineChart.setData(lineData);
+
 
                 if (selectedChart.equals("CO2 uitstoot - Tijd")) {
                     lineChart.setDescription("CO2 uitstoot tegen de tijd");
                     lineChart.setDescriptionTextSize(14f);
+
+                    for (int i = 0; i < shipData.size(); i++) {
+                        Ship currentShipData = shipData.get(i);
+                        double carbonFootprint = currentShipData.carbonFootprint();
+                        dCumulativeEmmision = dCumulativeEmmision + carbonFootprint;
+                        System.out.println(dCumulativeEmmision);
+                    }
+                    sCumulativeEmmision =  String.format("%.2f", dCumulativeEmmision);
+                    SharedPreferences.Editor editor = sharedpreferences.edit();
+                    editor.putString("sharedPrefCumulativeEmmision", sCumulativeEmmision);
+                    editor.commit();
                 } else {
                     lineChart.setDescription("CO2 uitstoot tegen de snelheid");
                     lineChart.setDescriptionTextSize(14f);
                 }
-                lineChart.invalidate();
 
-            } else {
+                refreshTextView.run();
+                XAxis x = lineChart.getXAxis();
+                x.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+                lineChart.invalidate();
 
             }
         }
@@ -121,7 +133,21 @@ public class GraphActivity extends AppCompatActivity {
         });
     }
 
+    private Runnable refreshTextView = new Runnable() {
 
+        public void run() {
+            String selectedChart = String.valueOf(chartSpinner.getSelectedItem());
+            TextView infoView = (TextView) findViewById(R.id.infoView);
+            String cumulativeEmmision = sharedpreferences.getString("sharedPrefCumulativeEmmision", "");
+
+            if (selectedChart.equals("CO2 uitstoot - Tijd")) {
+                infoView.setText("Totale uitstoot: " + cumulativeEmmision + " KG CO2");
+            } else {
+                infoView.setText("");
+            }
+
+        }
+    };
 
 
 }

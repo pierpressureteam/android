@@ -12,7 +12,6 @@ import com.github.mikephil.charting.data.LineDataSet;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 
@@ -66,7 +65,7 @@ public class Linechart {
                 Ship currentShipData = shipData.get(i);
                 Long time = currentShipData.getTime();
                 Date timeStamp = new Date(time);
-                DateFormat df = new SimpleDateFormat("dd/MM HH:mm:ss");
+                DateFormat df = new SimpleDateFormat("dd/MM HH:mm");
                 String timeString = df.format(timeStamp);
                 labels.add(timeString);
             }
@@ -75,7 +74,7 @@ public class Linechart {
             {
                 Ship currentShipData = shipData.get(i);
                 double dShipSpeed = currentShipData.getSpeed();
-                String shipSpeed = String.valueOf(Math.round(dShipSpeed));
+                String shipSpeed = String.format("%.2f", dShipSpeed) + " KM/U";
                 labels.add(shipSpeed);
             }
         }
