@@ -11,7 +11,7 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
 
     private Button mapdatabutton;
     private Button databutton;
-    private ImageButton graphbutton;
+    private Button graphbutton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +20,7 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
 
         mapdatabutton = (Button) findViewById(R.id.mapdatabutton);
         databutton = (Button) findViewById(R.id.databutton);
-        graphbutton = (ImageButton) findViewById(R.id.graphbutton);
+        graphbutton = (Button) findViewById(R.id.graphbutton);
 
         mapdatabutton.setOnClickListener( MenuActivity.this);
         databutton.setOnClickListener( MenuActivity.this);
