@@ -104,13 +104,34 @@ public class MapFragment extends Fragment {
         double lowestOfRange = 0;
         double highestOfRange = 100;
 
-        int r = 0, g = 0 , b = 0;
+        int red = Color.rgb(255,0,0);
+        int orange = Color.rgb(255,150,0);
+        int yellow = Color.rgb(255,255,0);
+        int lightGreen = Color.rgb(150,255,0);
+        int green = Color.rgb(0,255,0);
 
-        //TODO make color change between a preset range of 5 colors, every 20% the color should change.
+        double steps = (highest - lowest) / 5;
 
-        int color = Color.rgb(r, g, b);
+        if(emission <= lowest + steps){
+            return green;
+        }
+        if(emission > lowest + steps && emission <= lowest + (steps * 2)){
+            return lightGreen;
+        }
+        if(emission > lowest + (steps * 2) && emission <= lowest + (steps * 3)){
+            return yellow;
+        }
+        if(emission > lowest + (steps * 3) && emission <= lowest + (steps * 4)){
+            return orange;
+        }
+        if(emission > lowest + (steps * 4) && emission <= lowest + (steps * 5)){
+            return red;
+        }
 
-        return color;
+        //TODO make color change between a preset range of 5 colors, every 20% the color should change. Have to use the average
+
+
+        return Color.rgb(255,255,255);
     }
 
     public LatLng shipToLatLng(Ship ship) {
