@@ -91,7 +91,7 @@ public class MapFragment extends Fragment {
             googleMap.addCircle(new CircleOptions()
                     .center(new LatLng(ship.getLatitude(), ship.getLongitude()))
                     .radius(75)
-                    .strokeWidth(20f)
+                    .strokeWidth(15f)
                     .strokeColor(color)
                     .fillColor(color));
         }
