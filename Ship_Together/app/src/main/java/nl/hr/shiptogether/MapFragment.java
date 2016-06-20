@@ -70,7 +70,7 @@ public class MapFragment extends Fragment {
 
     public void positionCamera(double latitude, double longitude) {
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(new LatLng(latitude, longitude)).zoom(13).build();
+                .target(new LatLng(latitude, longitude)).zoom(10).build();
         googleMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
     }
@@ -80,9 +80,6 @@ public class MapFragment extends Fragment {
         for (Ship ship : list) {
             int color = 0;
             if (gsd != null) {
-                System.out.println(gsd.getAverage());
-                System.out.println(gsd.getHighest());
-                System.out.println(gsd.getLowest());
                 color = emissionToColor(ship.carbonFootprint(), gsd.getAverage());
             } else {
                 int MMSI = sharedpreferences.getInt("sharedPrefMMSI", 0);
@@ -91,48 +88,39 @@ public class MapFragment extends Fragment {
                 break;
             }
 
-
             googleMap.addCircle(new CircleOptions()
                     .center(new LatLng(ship.getLatitude(), ship.getLongitude()))
-                    .radius(25)
+                    .radius(75)
+                    .strokeWidth(20f)
                     .strokeColor(color)
                     .fillColor(color));
         }
     }
 
     public int emissionToColor(double emission, double mean) {
-        int red = Color.rgb(255,0,0);
-        int orange = Color.rgb(255,150,0);
-        int yellow = Color.rgb(255,255,0);
-        int lightGreen = Color.rgb(150,255,0);
-        int green = Color.rgb(0,255,0);
+        int red = Color.rgb(255, 0, 0);
+        int orange = Color.rgb(255, 150, 0);
+        int yellow = Color.rgb(255, 255, 0);
+        int lightGreen = Color.rgb(150, 255, 0);
+        int green = Color.rgb(0, 255, 0);
 
-        if(emission <= mean * 0.5){
+        if (emission <= mean * 0.6) {
             return green;
         }
-        if(emission > mean * 0.5 && emission < mean * 0.75){
+        if (emission > mean * 0.6 && emission < mean * 0.8) {
             return lightGreen;
         }
-        if(emission > emission * 0.75 && emission <= emission * 1.25){
+        if (emission > emission * 0.8 && emission <= emission * 1.2) {
             return yellow;
         }
-        if(emission > emission * 1.25 && emission <= emission * 1.5){
+        if (emission > emission * 1.2 && emission <= emission * 1.4) {
             return orange;
         }
-        if(emission > emission * 1.5){
+        if (emission > emission * 1.4) {
             return red;
         }
 
-        return Color.rgb(255,255,255);
-    }
-
-    public LatLng shipToLatLng(Ship ship) {
-        double lat = ship.getLatitude();
-        double lng = ship.getLongitude();
-
-        LatLng latLng = new LatLng(lat, lng);
-
-        return latLng;
+        return Color.rgb(255, 255, 255);
     }
 
     class NetworkHandlerGeneralData extends AsyncTask<SocketObjectWrapper, Void, GeneralShipData> {
@@ -184,16 +172,12 @@ public class MapFragment extends Fragment {
         }
 
         protected void onPostExecute(ArrayList<Ship> shipLocationEmissionData) {
-            ArrayList<LatLng> latLngArrayList = new ArrayList();
             double latitudeCamera = 51.9244;
             double longitudeCamera = 4.4777;
 
-            for (Ship ship : shipLocationEmissionData) {
-                LatLng latLng = shipToLatLng(ship);
-                latLngArrayList.add(latLng);
-
-                latitudeCamera = ship.getLatitude();
-                longitudeCamera = ship.getLongitude();
+            if (shipLocationEmissionData.size() > 0) {
+                latitudeCamera = shipLocationEmissionData.get(0).getLatitude();
+                longitudeCamera = shipLocationEmissionData.get(0).getLongitude();
             }
 
             shipEmissionDataDone = true;
@@ -201,7 +185,6 @@ public class MapFragment extends Fragment {
             if (gsdDone) {
                 dataPointsToMap(shipEmissionData);
             }
-
 
             positionCamera(latitudeCamera, longitudeCamera);
         }
