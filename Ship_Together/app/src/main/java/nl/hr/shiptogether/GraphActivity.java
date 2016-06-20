@@ -82,7 +82,7 @@ public class GraphActivity extends AppCompatActivity {
                 refreshTextView.run();
                 XAxis x = lineChart.getXAxis();
                 x.setPosition(XAxis.XAxisPosition.BOTTOM);
-
+                x.setAvoidFirstLastClipping(true);
                 lineChart.invalidate();
 
             }
