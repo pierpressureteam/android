@@ -103,20 +103,20 @@ public class MapFragment extends Fragment {
         int yellow = Color.rgb(255, 255, 0);
         int lightGreen = Color.rgb(150, 255, 0);
         int green = Color.rgb(0, 255, 0);
-
-        if (emission <= mean * 0.6) {
+        System.out.println("hoi" + mean);
+        if (emission <= mean * 0.8) {
             return green;
         }
-        if (emission > mean * 0.6 && emission < mean * 0.8) {
+        if (emission > mean * 0.8 && emission < mean * 0.9) {
             return lightGreen;
         }
-        if (emission > mean * 0.8 && emission <= mean * 1.2) {
+        if (emission > mean * 0.9 && emission <= mean * 1.1) {
             return yellow;
         }
-        if (emission > mean * 1.2 && emission <= mean * 1.4) {
+        if (emission > mean * 1.1 && emission <= mean * 1.2) {
             return orange;
         }
-        if (emission > mean * 1.4) {
+        if (emission > mean * 1.2) {
             return red;
         }
 
