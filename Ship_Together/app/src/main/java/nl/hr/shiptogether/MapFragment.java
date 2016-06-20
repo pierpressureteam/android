@@ -83,7 +83,7 @@ public class MapFragment extends Fragment {
                 System.out.println(gsd.getAverage());
                 System.out.println(gsd.getHighest());
                 System.out.println(gsd.getLowest());
-                color = emissionToColor(ship.carbonFootprint(), gsd.getLowest(), gsd.getHighest());
+                color = emissionToColor(ship.carbonFootprint(), gsd.getAverage());
             } else {
                 int MMSI = sharedpreferences.getInt("sharedPrefMMSI", 0);
                 SocketObjectWrapper sow2 = new SocketObjectWrapper(new Ship(MMSI), 7);
@@ -100,36 +100,28 @@ public class MapFragment extends Fragment {
         }
     }
 
-    public int emissionToColor(double emission, double lowest, double highest) {
-        double lowestOfRange = 0;
-        double highestOfRange = 100;
-
+    public int emissionToColor(double emission, double mean) {
         int red = Color.rgb(255,0,0);
         int orange = Color.rgb(255,150,0);
         int yellow = Color.rgb(255,255,0);
         int lightGreen = Color.rgb(150,255,0);
         int green = Color.rgb(0,255,0);
 
-        double steps = (highest - lowest) / 5;
-
-        if(emission <= lowest + steps){
+        if(emission <= mean * 0.5){
             return green;
         }
-        if(emission > lowest + steps && emission <= lowest + (steps * 2)){
+        if(emission > mean * 0.5 && emission < mean * 0.75){
             return lightGreen;
         }
-        if(emission > lowest + (steps * 2) && emission <= lowest + (steps * 3)){
+        if(emission > emission * 0.75 && emission <= emission * 1.25){
             return yellow;
         }
-        if(emission > lowest + (steps * 3) && emission <= lowest + (steps * 4)){
+        if(emission > emission * 1.25 && emission <= emission * 1.5){
             return orange;
         }
-        if(emission > lowest + (steps * 4) && emission <= lowest + (steps * 5)){
+        if(emission > emission * 1.5){
             return red;
         }
-
-        //TODO make color change between a preset range of 5 colors, every 20% the color should change. Have to use the average
-
 
         return Color.rgb(255,255,255);
     }
