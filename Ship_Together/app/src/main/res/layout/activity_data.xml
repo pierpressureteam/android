@@ -75,4 +75,22 @@
         android:layout_above="@+id/MMSItextView"
         android:layout_centerHorizontal="true" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Tijdstip"
+        android:id="@+id/textView4"
+        android:layout_below="@+id/textView5"
+        android:layout_marginTop="20dp"  />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text=""
+        android:id="@+id/tijdStipTextView"
+        android:layout_alignBottom="@+id/textView4"
+        android:layout_alignStart="@+id/SOGtextView" />
+
 </RelativeLayout>

@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -47,6 +50,8 @@ public class DataActivity extends AppCompatActivity {
 
             if (shipData2 != null) {
                 shipData = shipData2;
+
+
                 refreshTextView.run();
 
             }
@@ -80,10 +85,17 @@ public class DataActivity extends AppCompatActivity {
             TextView MMSIView = (TextView) findViewById(R.id.MMSItextView);
             TextView SOGView = (TextView) findViewById(R.id.SOGtextView);
             TextView CarbonFootprintView = (TextView) findViewById(R.id.CarbonFootprinttextView);
+            TextView timeStampView = (TextView) findViewById(R.id.tijdStipTextView);
+
+            Long time = shipData.getTime();
+            Date timeStamp = new Date(time);
+            DateFormat df = new SimpleDateFormat("dd/MM HH:mm");
+            String timeString = df.format(timeStamp);
 
             MMSIView.setText(MMSI.toString());
             SOGView.setText( Double.toString(Math.round(shipData.getSpeed())) + " km/h");
             CarbonFootprintView.setText(Double.toString(Math.round(shipData.carbonFootprint())) + " KG");
+            timeStampView.setText(timeString);
         }
     };
 

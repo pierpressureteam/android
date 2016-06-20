@@ -69,7 +69,6 @@ public class GraphActivity extends AppCompatActivity {
                         Ship currentShipData = shipData.get(i);
                         double carbonFootprint = currentShipData.carbonFootprint();
                         dCumulativeEmmision = dCumulativeEmmision + carbonFootprint;
-                        System.out.println(dCumulativeEmmision);
                     }
                     sCumulativeEmmision =  String.format("%.2f", dCumulativeEmmision);
                     SharedPreferences.Editor editor = sharedpreferences.edit();
