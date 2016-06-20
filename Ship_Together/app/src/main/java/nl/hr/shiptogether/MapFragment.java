@@ -110,13 +110,13 @@ public class MapFragment extends Fragment {
         if (emission > mean * 0.6 && emission < mean * 0.8) {
             return lightGreen;
         }
-        if (emission > emission * 0.8 && emission <= emission * 1.2) {
+        if (emission > mean * 0.8 && emission <= mean * 1.2) {
             return yellow;
         }
-        if (emission > emission * 1.2 && emission <= emission * 1.4) {
+        if (emission > mean * 1.2 && emission <= mean * 1.4) {
             return orange;
         }
-        if (emission > emission * 1.4) {
+        if (emission > mean * 1.4) {
             return red;
         }
 
