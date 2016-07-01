@@ -57,7 +57,7 @@ public class MapFragment extends Fragment {
         googleMap = mMapView.getMap();
         sharedpreferences = MapDataActivity.context.getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
-        int MMSI = sharedpreferences.getInt("sharedPrefMMSI", 0);
+        int MMSI = sharedpreferences.getInt("sharedPrefMMSI", 0); // Gets the MMSI of the ship the user is tracking.
 
         SocketObjectWrapper sow = new SocketObjectWrapper(new Ship(MMSI), 3);
         SocketObjectWrapper sow2 = new SocketObjectWrapper(new Ship(MMSI), 7);
@@ -68,6 +68,7 @@ public class MapFragment extends Fragment {
         return v;
     }
 
+    // Positions the camera to the location in the parameters.
     public void positionCamera(double latitude, double longitude) {
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(new LatLng(latitude, longitude)).zoom(10).build();
@@ -75,6 +76,7 @@ public class MapFragment extends Fragment {
                 .newCameraPosition(cameraPosition));
     }
 
+    // Receive an arraylist with ships and adds that to the google map.
     public void dataPointsToMap(ArrayList<Ship> list) {
 
         for (Ship ship : list) {
@@ -103,7 +105,6 @@ public class MapFragment extends Fragment {
         int yellow = Color.rgb(255, 255, 0);
         int lightGreen = Color.rgb(150, 255, 0);
         int green = Color.rgb(0, 255, 0);
-        System.out.println("hoi" + mean);
         if (emission <= mean * 0.8) {
             return green;
         }
@@ -120,7 +121,7 @@ public class MapFragment extends Fragment {
             return red;
         }
 
-        return Color.rgb(255, 255, 255);
+        return Color.rgb(255, 255, 255); // This is black.
     }
 
     class NetworkHandlerGeneralData extends AsyncTask<SocketObjectWrapper, Void, GeneralShipData> {
@@ -145,7 +146,7 @@ public class MapFragment extends Fragment {
         protected void onPostExecute(GeneralShipData gsdIn) {
             gsd = gsdIn;
             gsdDone = true;
-
+            // Here we check to see if the other thread is done, if it is not we will let the other thread do this.
             if (shipEmissionDataDone) {
                 dataPointsToMap(shipEmissionData);
             }
@@ -182,6 +183,7 @@ public class MapFragment extends Fragment {
 
             shipEmissionDataDone = true;
             shipEmissionData = shipLocationEmissionData;
+            // Here we check to see if the other thread is done, if it is not we will let the other thread do this.
             if (gsdDone) {
                 dataPointsToMap(shipEmissionData);
             }
